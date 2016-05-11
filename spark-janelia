@@ -116,7 +116,7 @@ def start():
           os.environ['IPYTHON'] = "1"
     
     if args.notebook is True:
-       os.environ['IPYTHON_OPTS'] = "notebook --profile=nbserver"
+       os.environ['IPYTHON_OPTS'] = "notebook --config=~/.ipython/profile_nbserver/ipython_notebook_config.py --notebook-dir=~/"
        address = master[8:][:-5]
        print('\n')
        print('View your notebooks at http://' + os.environ['HOSTNAME'] + ':9999')
@@ -128,7 +128,7 @@ def start():
     if os.getenv('PATH') is None:
         os.environ['PATH'] = ""
 
-    os.environ['PATH'] = os.environ['PATH'] + ":" + "/usr/local/python-2.7.6/bin"
+    #os.environ['PATH'] = os.environ['PATH'] + ":" + "/usr/local/python-2.7.6/bin"
     os.environ['MASTER'] = master
     os.system(version + '/bin/pyspark')
 
@@ -192,9 +192,9 @@ if __name__ == "__main__":
     args = parser.parse_args()
                         
     SPARKVERSIONS = {   
-        'stable': '/usr/local/spark-current/',
-        'rc': '/usr/local/spark-rc/',
-        'test': '/usr/local/spark-test'
+        'stable': '~/spark-current/',
+        'rc': '~/spark-rc/',
+        'test': '/groups/svoboda/home/moharb/spark-test'
     }                   
                         
     SPARKJOBS = {
