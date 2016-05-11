@@ -98,7 +98,7 @@ if args.task == 'start':
     master = f.readline().replace('\n','')
 
     if args.ipython is True:
-       os.environ['IPYTHON_OPTS'] = "notebook --profile=nbserver"
+       os.environ['PYSPARK_DRIVER_PYTHON_OPTS'] = "notebook --profile=nbserver"
        status = master[8:][:-5]
        print('\n')
        print('View your notebooks at http://' + os.environ['HOSTNAME'] + ':9999')
@@ -114,8 +114,8 @@ if args.task == 'start':
     if os.getenv('PATH') is None:
         os.environ['PATH'] = ""
 
-    if os.getenv('IPYTHON') is None:
-       os.environ['IPYTHON'] = "1"
+    if os.getenv('PYSPARK_DRIVER_PYTHON') is None:
+       os.environ['PYSPARK_DRIVER_PYTHON'] = "1"
 
     os.environ['PATH'] = os.environ['PATH'] + ":" + location + "/bin"
     os.environ['PATH'] = os.environ['PATH'] + ":" + "/usr/local/python-2.7.6/bin"
