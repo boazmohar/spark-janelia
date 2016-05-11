@@ -2,8 +2,6 @@
 
 Scripts, utilities, and community for launching Spark on the Janelia Research Center cluster. We maintain a chatroom on gitter if you have any questions.
 
-[![Join the chat at https://gitter.im/freeman-lab/spark-janelia](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/freeman-lab/spark-janelia?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-
 ---
 ### Organizing usage
 Check out the [teamwork](TEAMWORK.md) page, where we help coordinate usage among users.
@@ -76,7 +74,7 @@ it will be helpful to have the Spark cluster shut down automatically after compl
 ```bash
 spark-janelia <args> lsd -s <submit_arguments>
 ```
-will submit your application and delete the cluter job, once it has finished. `lsd` is short for `launch-submit-and-destroy` and the meaning of `submit_arguments` is along the lines of `spark-janelia submit`.
+will submit your application and delete the cluter job, once it has finished. `lsd` is short for `launch-submit-and-destroy` and the meaning of `submit_arguments` is along the lines of `spark-janelia submit`. For an example of how to set up a Python script for this workflow, see the example in `examples/lsd-example.py`.
 
 ---
 ### Using Thunder
