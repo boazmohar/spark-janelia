@@ -115,7 +115,7 @@ if args.task == 'start':
         os.environ['PATH'] = ""
 
     if os.getenv('PYSPARK_DRIVER_PYTHON') is None:
-       os.environ['PYSPARK_DRIVER_PYTHON'] = "1"
+       os.environ['PYSPARK_DRIVER_PYTHON'] = "jupyter"
 
     os.environ['PATH'] = os.environ['PATH'] + ":" + location + "/bin"
     os.environ['PATH'] = os.environ['PATH'] + ":" + "/usr/local/python-2.7.6/bin"

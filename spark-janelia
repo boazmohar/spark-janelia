@@ -110,13 +110,12 @@ def destroy(jobId ):
 def start():
     f = open(os.path.expanduser("~") + '/spark-master', 'r')
     master = f.readline().replace('\n','')
-
+	
     if args.notebook is True or args.ipython is True:
-       if os.getenv('IPYTHON') is None:
-          os.environ['IPYTHON'] = "1"
-    
+       if os.getenv('PYSPARK_DRIVER_PYTHON') is None:
+          os.environ['PYSPARK_DRIVER_PYTHON'] = "jupyter"
     if args.notebook is True:
-       os.environ['IPYTHON_OPTS'] = "notebook --config=~/.ipython/profile_nbserver/ipython_notebook_config.py --notebook-dir=~/"
+       os.environ['PYSPARK_DRIVER_PYTHON_OPTS'] = "notebook --config=~/.ipython/profile_nbserver/ipython_notebook_config.py --notebook-dir=~/"
        address = master[8:][:-5]
        print('\n')
        print('View your notebooks at http://' + os.environ['HOSTNAME'] + ':9999')
@@ -203,8 +202,8 @@ if __name__ == "__main__":
                         
     SPARKVERSIONS = {   
         'stable': '~/spark-current/',
-        'rc': '~/spark-rc/',
-        'test': '/groups/svoboda/home/moharb/spark-test'
+        'rc': '/groups/svoboda/home/moharb/spark-rc/',
+        'test': '/groups/svoboda/home/moharb/spark-test/'
     }                   
                         
     SPARKJOBS = {
