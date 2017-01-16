@@ -86,10 +86,11 @@ def startmaster(sparktype, runtime):
     process = subprocess.Popen(["qsub -jc {}".format(options)], shell=True, stdout=subprocess.PIPE)
     rawout = process.communicate()
     try:
-        masterjobid = rawout[0].split(" ")[2]
-    except:
+        masterjobid = rawout[0].split(b" ")[2].decode("utf-8")
+    except E:
+        print("Error here {}".format(E.messege))
         sys.exit(1)
-    print "Master submitted. Job ID is {}".format(masterjobid)
+    print("Master submitted. Job ID is {}".format(masterjobid))
     return masterjobid
 
 def startworker(sparktype, masterjobid, runtime):
