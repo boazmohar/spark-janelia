@@ -1,5 +1,5 @@
-#!/misc/local/python-2.7.11/bin/python2.7
-
+#!/groups/svoboda/home/moharb/anaconda2/bin/python2.7
+#/groups/svoboda/home/moharb/anaconda3/bin/python3.5
 from __future__ import print_function
 import os
 import glob
@@ -36,7 +36,7 @@ def getqstat():
     process = subprocess.Popen("qstat -xml", shell=True, stdout=subprocess.PIPE)
     rawxml = process.communicate()[0]
     xmldict = xmltodict.parse(rawxml)
-# qstat -xml puts pending and running in separate namespaces. Need to append. 
+# qstat -xml puts pending and running in separate namespaces. Need to append.
     for qkey in xmldict[u'job_info']:
         if qkey == u'@xmlns:xsd':
             continue
@@ -136,7 +136,7 @@ def login():
             jclass = job.find('jclass_name').text
             state = job.find('state').text
             jobid = int(job.find('JB_job_number').text)
-            if (jclass[:5] == 'spark') and (state == 'r'):
+            if jclass and (jclass[:5] == 'spark') and (state == 'r'):
                 if args.jobid:
                     if jobid == args.jobid:
                         address = job.find('queue_name').text.split('@')[1]
@@ -194,7 +194,7 @@ def start():
 
     if args.notebook is True or args.ipython is True:
        os.environ['PYSPARK_DRIVER_PYTHON'] = 'ipython'
-    
+
     if args.notebook is True:
        os.environ['PYSPARK_DRIVER_PYTHON'] = 'jupyter'
        os.environ['PYSPARK_DRIVER_PYTHON_OPTS'] = 'notebook --ip "*" --port 9999 --no-browser'
@@ -217,7 +217,7 @@ def startScala():
     if os.getenv('PATH') is None:
         os.environ['PATH'] = ""
 
-    os.environ['PATH'] = os.environ['PATH'] + ":" + "/misc/local/python-2.7.11/bin"
+    os.environ['PATH'] = os.environ['PATH'] + ":" + "/groups/svoboda/home/moharb/anaconda2/bin"
     f = open(os.path.expanduser("~") + '/spark-master', 'r')
     os.environ['MASTER'] = f.readline().replace('\n','')
     os.system(version + '/bin/spark-shell')
@@ -229,7 +229,7 @@ def submit(master = ''):
     if os.getenv('PATH') is None:
         os.environ['PATH'] = ""
 
-    os.environ['PATH'] = os.environ['PATH'] + ":" + "/misc/local/python-2.7.11/bin"
+    os.environ['PATH'] = os.environ['PATH'] + ":" + "/groups/svoboda/home/moharb/anaconda2/bin"
     if master == '':
         with open(os.path.expanduser("~") + '/spark-master', 'r') as f:
             master = f.readline().replace('\n','')
@@ -243,7 +243,7 @@ def submit(master = ''):
 
 def launchAndWait():
         jobId  = launch(str(args.sleep_time))
-        master = ''     
+        master = ''
         while( master == '' ):
             master = findMasterByJobId(jobId)
             time.sleep(1) # wait 1 second to avoid spamming the cluster
@@ -317,11 +317,11 @@ def checkstop(inval, jobtype):
         return True
 
 def selectionlist(joblist, jobtype):
-    i = 0 
+    i = 0
     selectionlist = {}
-    print "Select {} to kill from list below:".format(jobtype)
+    print("Select {} to kill from list below:".format(jobtype))
     for jobid in joblist.keys():
-        i = i + 1 
+        i = i + 1
         host, status = joblist[jobid]
         selectionlist[i] = jobid
         print("{}) Host: {} JobID: {} Status: {}".format(i, host, jobid, status))
@@ -344,9 +344,9 @@ if __name__ == "__main__":
     skipcheckstop = False
 
     parser = argparse.ArgumentParser(description="launch and manage spark cluster jobs")
-                        
+
     choices = ('launch', 'login', 'destroy', 'start', 'start-scala', 'submit', 'lsd', 'launch-in', 'update', 'add-workers', 'remove-workers')
-                        
+
     parser.add_argument("task", choices=choices)
     parser.add_argument("-n", "--nnodes", type=int, default=2, required=False)
     parser.add_argument("-i", "--ipython", action="store_true")
@@ -356,65 +356,67 @@ if __name__ == "__main__":
     parser.add_argument("-t", "--sleep_time", type=int, default=86400, required=False)
     parser.add_argument("-s", "--submitargs", type=str, default='', required=False)
     parser.add_argument("-f", "--force", action="store_true")
-                        
+
     args = parser.parse_args()
-                        
-    SPARKVERSIONS = {   
+
+    SPARKVERSIONS = {
         'stable': '/misc/local/spark-current/',
-        'rc': '/misc/local/spark-rc/',
-        'test': '/misc/local/spark-test',
+        #'rc': '/misc/local/spark-rc/',
+		'rc': '/groups/svoboda/home/moharb/spark-rc/',
+        'test': '/groups/svoboda/home/moharb/spark-test',
         '2': '/misc/local/spark-2'
-    }                   
-                        
+    }
+
     SPARKJOBS = {
-        'stable': 'spark',   
-        'rc': 'spark-rc',  
-        'test': 'spark-test',   
+        'stable': 'spark',
+        'rc': 'spark-rc',
+        'test': 'spark-test',
         '2': 'spark-2'
-    }    
+    }
 
     SPARKLAUNCHSCRIPTS = {
         'stable': 'start-cluster.sh',
         'rc': 'start-rc-cluster.sh',
+		'test': 'start-test-cluster.sh',
         '2': 'start-2-cluster.sh'
     }
 
     version = SPARKVERSIONS[args.version]
     jobname = SPARKJOBS[args.version]
     launchscript = SPARKLAUNCHSCRIPTS[args.version]
-                        
+
     if args.nnodes == 1 and args.task == 'launch':
         raise Exception('Cannot start a Spark cluster with only 1 node, please request 2 or more.')
-                        
+
     if args.force == True:
         skipcheckstop = True
 
     if args.task == 'launch':
         launch(str(args.sleep_time))
-                        
+
     elif args.task == 'login':
-        login()         
-                        
+        login()
+
     elif args.task == 'destroy':
         destroy(args.jobid or '')
-                        
+
     elif args.task == 'start':
-        start()         
-                        
+        start()
+
     elif args.task == 'start-scala':
-        startScala()   
-                        
+        startScala()
+
     elif args.task == 'submit':
-        submit()        
-                        
+        submit()
+
     elif args.task == 'lsd':
         master, jobId = launchAndWait()
         master = 'spark://%s:7077' % master
-        print('\n')     
+        print('\n')
         print('%-20s%s\n%-20s%s' % ( 'job id:', jobId, 'spark master:', master ) )
-        print('\n')     
+        print('\n')
         p = multiprocessing.Process(target=submitAndDestroy, args=(master, jobId))
-        p.start()       
+        p.start()
 
     elif args.task == 'launch-in':
         master, jobId = launchAndWait()
@@ -434,4 +436,3 @@ if __name__ == "__main__":
         for node in range(args.nnodes):
             workerlist = findworker(str(args.jobid))
             terminatew = stopworker(str(args.jobid), terminatew, workerlist, skipcheckstop)
-
